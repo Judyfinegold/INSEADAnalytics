@@ -1,0 +1,75 @@
+
+---
+title: "Exercise Set 1"
+author: "T. Evgeniou"
+runtime: shiny
+output:html_document:
+  toc: yes
+---
+
+
+
+The purpose of this exercise is to become familiar with:
+
+1. Basic statistics functions in R;
+2. Simple matrix operations;
+3. Simple data manipulations; 
+4. The idea of functions as well as some useful customized functions provided. 
+
+While doing this exercise we will also see how to generate replicable and customizable reports. For this purpose the exercise uses the R Markdown capabilities (see [Markdown Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) or a [basic introduction to R Markdown](http://rmarkdown.rstudio.com/authoring_basics.html)).  These capabilities allow us to create dynamic reports. For example today's date is `r Sys.Date()` (you need to see the .Rmd to understand that this is *not* a static typed-in date but it changes every time you compile the .Rmd - if the date changed of course).
+
+Before starting, make sure you have pulled the [exercise files](https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/Exercises/Exerciseset1)  on your github repository (if you pull the course github repository you also get the exercise set files automatically). Moreover, make sure you are in the directory of this exercise. Directory paths may be complicated, and sometimes a frustrating source of problems, so it is recommended that you use these R commands to find out your current working directory and, if needed, set it where you have the main files for the specific exercise/project (there are other ways, but for now just be aware of this path issue). For example, assuming we are now in the "MYDIRECTORY/INSEADAnalytics" directory, we can do these: 
+
+```{r echo=TRUE, eval=FALSE, tidy=TRUE}
+getwd()
+setwd("Exercises/Exerciseset1/")
+list.files()
+```
+
+**Note:** you can always use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
+
+Let's now see the exercise. 
+
+**IMPORTANT:** You should answer all questions by simply adding your code/answers in this document through editing the file ExerciseSet1.Rmd and then clicking on the "Knit HTML" button in RStudio.  Once done, please post your .Rmd and html files in your github repository. 
+
+
+### Exercise Data
+
+We download daily prices (open, high, low, close, and adjusted close) and volume data of publicly traded companies and markets from the web (e.g. Yahoo! or Google, etc). This is done by sourcing the file data.R as well as some helper functions in herpersSet1.R which also installs a number of R libraries (hence the first time you run this code you will see a lot of red color text indicating the *download* and *installation* process):
+
+```
+{r eval = TRUE, echo=TRUE, error = FALSE, warning=FALSE,message=FALSE,results='asis'}
+source("helpersSet1.R")
+source("dataSet1.R")
+```
+
+For more information on downloading finance data from the internet as well as on finance related R tools see these starting points (there is a lot more of course available):
+
+* [Some finance data loading tools](http://www.r-bloggers.com/r-code-yahoo-finance-data-loading/)
+* [Connecting directly to Bloomberg](http://www.r-bloggers.com/rblpapi-connecting-r-to-bloomberg/)
+* [Some time series plot tools](http://www.r-bloggers.com/plotting-time-series-in-r-using-yahoo-finance-data/)
+* [Various finance code links](https://cran.r-project.org/web/views/Finance.html)
+* [More links](http://blog.revolutionanalytics.com/2013/12/quantitative-finance-applications-in-r.html)
+* [Even more links](http://www.r-bloggers.com/financial-data-accessible-from-r-part-iv/)
+* Of course endless available code (e.g. like this one that seems to [get companies' earnings calendars](https://github.com/gsee/qmao/blob/master/R/getCalendar.R))
+
+#### Optional Question 
+
+1. Can you find some interesting finance related R package or github repository? 
+**Your Answers here:**
+```
+Rmetrics suite of packages- fArma, fAsianOptions, fAssets, fBasics, fBonds, timeDate (formerly: fCalendar), fCopulae, fExoticOptions, fExtremes, fGarch, fImport, fNonlinear, fOptions, fPortfolio, fRegression, timeSeries (formerly: fSeries), fTrading, fUnitRoots
+Portfolio package
+Portfolio performance analytics package
+Parma package
+```
+
+### Part I: Statistics of S&P Daily Returns
+
+We have `r nrow(StockReturns)` days of data, starting from `r rownames(StockReturns)[1]` until `r tail(rownames(StockReturns),1)`.  Here are some basic statistics about the S&P returns:
+
+1. The cumulative returns of the S&P index during this period is `r round(100*sum(StockReturns[,1]),1)`%.
+2. The average daily returns of the S&P index during this period is `r round(100*mean(StockReturns[,1]),3)`%;
+2. The standard deviation of the daily returns of the S&P index during this period is `r round(100*sd(StockReturns[,1]),3)`%;
+
+
