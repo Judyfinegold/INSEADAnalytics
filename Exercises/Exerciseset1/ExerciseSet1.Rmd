@@ -1,12 +1,9 @@
 
 ---
 title: "Exercise Set 1"
-author: "T. Evgeniou"
-runtime: shiny
-output:html_document:
-  toc: yes
+author: "Judith"
+output: html_document
 ---
-
 
 
 The purpose of this exercise is to become familiar with:
@@ -56,11 +53,16 @@ For more information on downloading finance data from the internet as well as on
 
 1. Can you find some interesting finance related R package or github repository? 
 **Your Answers here:**
+
 ```
-Rmetrics suite of packages- fArma, fAsianOptions, fAssets, fBasics, fBonds, timeDate (formerly: fCalendar), fCopulae, fExoticOptions, fExtremes, fGarch, fImport, fNonlinear, fOptions, fPortfolio, fRegression, timeSeries (formerly: fSeries), fTrading, fUnitRoots
-Portfolio package
-Portfolio performance analytics package
-Parma package
+I have found the following interesting finance packages:
+Rmetrics suite of packages (https://cran.r-project.org/web/views/Finance.html)- fArma, fAsianOptions, fAssets, fBasics, fBonds, timeDate (formerly: fCalendar), fCopulae, fExoticOptions, fExtremes, fGarch, fImport, fNonlinear, fOptions, fPortfolio, fRegression, timeSeries (formerly: fSeries), fTrading, fUnitRoots. A list of specialised finance packages
+
+Portfolio package (https://cran.r-project.org/web/packages/portfolio/index.html). Useful for analysing equity portfolios- allows you to create a basic portfolio, examine its exposures to various factors, calculate its performance over time, and determine the contributions to performance from various categories
+
+Parma package (https://cran.r-project.org/web/packages/parma/index.html)- The Portfolio Allocation and Risk Management Applications (parma) package provides
+a set of models and methods for use in the allocation and management of capital in financial
+portfolios. Key for portfolio optimisation and risk management
 ```
 
 ### Part I: Statistics of S&P Daily Returns
@@ -92,15 +94,19 @@ pnl_plot(SPY)
 1. Line 8: mytickers = c("SPY", "AAPL"). Tickers defined as Apple and SPY
 ("helpersSet1.R") uses this .R file
 
-2. cumulative: 577.2
-average daily returns: 0.149
-sd: 2.246
+2. In the same period the following results are for Apple:
+cumulative: 575.5%
+average daily returns: 0.148%
+sd: 2.425%
 
-3. mytickers = c("SPY", "AAPL", "YHOO")  
+3. 
+This should be done in 2 stages. First, update dataSet1.R to change line 8:
+mytickers = c("SPY", "AAPL", "YHOO")  
 
-cumulative: 278.3
-average daily returns: 0.072
-sd: 3.065
+The cumulative data including Yahoo stock has the following results:
+cumulative: 276.3%
+average daily returns: 0.071%
+sd: 3.064%
 ```
 
 
@@ -194,7 +200,7 @@ write.csv(StockReturns[1:20,c("SPY","AAPL")], file = "twentydays.csv", row.names
 Do not get surpsised if you see the csv file in your directories suddenly! You can then read the data from the csv file using the read.csv command. For example, this will load the data from the csv file and save it in a new variable that now is called "myData": 
 
 ```{r eval = TRUE, echo=TRUE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
-myData <- read.csv(file = "twentydays.csv", header = TRUE, sep=";")
+myData <- read.csv(file = "twentydays.csv", header = TRUE, sep=",")
 ```
 
 Try it!
@@ -204,19 +210,19 @@ Try it!
 1. Once you write and read the data as described above, what happens when you run this command in the console of the RStudio: `sum(myData != StockReturns[1:20,])`
 
 
-
 2. *(Extra exercise)* What do you think will happen if you now run this command, and why:  
 
 ```{r eval = FALSE, echo=TRUE}
-myData + StockReturns[1:40,])
+(myData + StockReturns[1:40,])
 ```
 
 **Your Answers here:**
 ```
-1. you get the sum of the number of rows i.e. 20 rows of stock returns.
+1. This command gives me a sum of stock returns 0.466 if I run:
+sum(myData= StockReturns[1:20,])
 
-2. this joins "mydata" with stock returns from the first 40 days
-therefore you should get "40"
+2. This command gives an error message :non-numeric argument to binary operatory
+It attempts to sum results from rows 1:40 whereas only 20 rows exist in that csv file
 
 ```
 
