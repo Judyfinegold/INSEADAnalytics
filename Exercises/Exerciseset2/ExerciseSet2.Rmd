@@ -1,6 +1,6 @@
 ---
-title: "Exercise Set 2: A $300 Billion Strategy"
-author: "T. Evgeniou"
+title: 'Exercise Set 2: A $300 Billion Strategy'
+author: "Judith Finegold"
 output: html_document
 ---
 
@@ -163,14 +163,79 @@ print(m1,'chart')
 <br>
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
+
+```
+Qn 1: We need 6 components to explain at least 50% of the variance
+Qn 2: 0.93
+Qn3: The first 10 components can be called the "principal components". Together they account for 62.61% of the variance in the sample
+
+```
 
 
-<hr>
+Qn4: Part a- the pre-crisis bull market years (data between November 1, 2002, and October 1, 2007)
 
+```{r echo=FALSE, eval=TRUE, comment=NA, warning=FALSE,error=FALSE, message=FALSE, prompt=FALSE, tidy=TRUE}
+crisis_data = futures_data[as.Date(rownames(futures_data)) > "2002-11-01" & as.Date(rownames(futures_data)) < "2007-10-01", ]
+Variance_Explained_Table_results2<-PCA(crisis_data, graph=FALSE)
+Variance_Explained_Table2<-cbind(paste("component",1:ncol(crisis_data),sep=" "),Variance_Explained_Table_results2$eig)
+Variance_Explained_Table2<-as.data.frame(Variance_Explained_Table2)
+colnames(Variance_Explained_Table2)<-c("Component","Eigenvalue", "Percentage_of_explained_variance", "Cumulative_percentage_of_explained_variance")
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+show_data = data.frame(Variance_Explained_Table2)
+m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'),formats=list(Eigenvalue="#.##",Percentage_of_explained_variance="#.##",Cumulative_percentage_of_explained_variance="#.##"))
+print(m1,'chart')
+```
+
+
+```{r echo=FALSE, eval=TRUE, comment=NA, warning=FALSE,error=FALSE, message=FALSE, prompt=FALSE, tidy=TRUE}
+eigenvalues2  <- Variance_Explained_Table2[,2]
+```
+
+```{r Fig2, echo=FALSE, comment=NA, results='asis', message=FALSE, fig.align='center', fig=TRUE}
+df           <- cbind(as.data.frame(eigenvalues2), c(1:length(eigenvalues2)), rep(1, length(eigenvalues2)))
+colnames(df) <- c("eigenvalues", "components", "abline")
+Line         <- gvisLineChart(as.data.frame(df), xvar="components", yvar=c("eigenvalues","abline"), options=list(title='Scree plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Eigenvalues'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(Line, 'chart')
+```
+
+```
+Qn 5: The charts above show that in the pre-crisis bull market, 15 principal components had an eigenvalue >1 which accounted for 69.95% of cumulative explained variance. In contrast, in the financial crisis years only 13 principal components have an eigenvalue >1 which accounts for 75.4% of cumulative explained variance. 
+Therefore in financial crisis years less components are responsible for more the the variance, which suggests there are fewer key factors to explain the changes in the markets.
+```
+
+<br>
+
+Part b- the financial crisis years (data between October 1, 2007 and March 1, 2009)
+
+```{r echo=FALSE, eval=TRUE, comment=NA, warning=FALSE,error=FALSE, message=FALSE, prompt=FALSE, tidy=TRUE}
+crisis_data = futures_data[as.Date(rownames(futures_data)) > "2007-10-01" & as.Date(rownames(futures_data)) < "2009-03-01", ]
+Variance_Explained_Table_results2<-PCA(crisis_data, graph=FALSE)
+Variance_Explained_Table2<-cbind(paste("component",1:ncol(crisis_data),sep=" "),Variance_Explained_Table_results2$eig)
+Variance_Explained_Table2<-as.data.frame(Variance_Explained_Table2)
+colnames(Variance_Explained_Table2)<-c("Component","Eigenvalue", "Percentage_of_explained_variance", "Cumulative_percentage_of_explained_variance")
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+show_data = data.frame(Variance_Explained_Table2)
+m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'),formats=list(Eigenvalue="#.##",Percentage_of_explained_variance="#.##",Cumulative_percentage_of_explained_variance="#.##"))
+print(m1,'chart')
+```
+
+
+```{r echo=FALSE, eval=TRUE, comment=NA, warning=FALSE,error=FALSE, message=FALSE, prompt=FALSE, tidy=TRUE}
+eigenvalues2  <- Variance_Explained_Table2[,2]
+```
+
+```{r Fig3, echo=FALSE, comment=NA, results='asis', message=FALSE, fig.align='center', fig=TRUE}
+df           <- cbind(as.data.frame(eigenvalues2), c(1:length(eigenvalues2)), rep(1, length(eigenvalues2)))
+colnames(df) <- c("eigenvalues", "components", "abline")
+Line         <- gvisLineChart(as.data.frame(df), xvar="components", yvar=c("eigenvalues","abline"), options=list(title='Scree plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Eigenvalues'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(Line, 'chart')
+```
+
+<br>
 ### A Simple Futures Trend Following Strategy
 
 We can now develop a simple futures trend following trading strategy, as outlined in the papers in the Exercise Introduction above. There are about $300 billion invested in such strategies! Of course we cannot develop here a sophisticated product, but with some more work... 
@@ -188,7 +253,7 @@ Here is the code.
 ```{r echo=TRUE, eval=TRUE, comment=NA, warning=FALSE,error=FALSE, message=FALSE, prompt=FALSE, tidy=TRUE}
 signal_used = 0*futures_data # just initialize the trading signal to be 0
 # Take many moving Average (MA) Signals and let them "vote" with their sign (+-1, e.g. long or short vote, for each signal)
-MAfreq<-seq(10,250,by=20)
+MAfreq<-seq(10,100,by=10)
 for (iter in 1:length(MAfreq))
   signal_used = signal_used + sign(apply(futures_data,2, function(r) ma(r,MAfreq[iter])))
 # Now make sure we invest $1 every day (so the sum of the absolute values of the weights is 1 every day)
@@ -247,11 +312,40 @@ How does this compare with **existing CTA products** such as [this one from Soci
 <br>
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
 
+```
+Qn 1: 
+
+The first part of the code clones the futures_data matrix into a signal_used matrix (by *0)
+  signal_used = 0*futures_data 
+  
+The second part produces a list of the windows of moving averages you want to use over which you look at the movement of the futures.
+  MAfreq<-seq(10,250,by=20) gives you a list 10,30,50,…..250
+  
+Third, 
+(iter in 1:length(MAfreq))
+This sets up a look,  from 1 to the number of windows as shown above, and calls the current number “iter’. This then allows you to look up the window using this index. e.g.  MAfreq[1] give you 10; MAfreq[2] gives you 30 etc..
+
+Rhe signals used matrix is then added to another matrix that is made by looking at the futures_data matrix
+Here you declare a new function in situ - function(r); and passes it to the moving average function (ma) which takes two parameters - a column of numbers; and the window MAfreq[iter]. 
+
+This matrix is added to the signals used and repeated  for every window. 
+
+Since you only have one dollar to invest each day you now need to normalise each row so the absolute magnitudes sum to 1.
+You apply by rows  apply(signal_used, 1, function(r))
+Where you declare the function in situ - res = r/sum(abs(r))
+
+Finally, shift(signal_used,2)
+This shifts the signal back by 2 days
+
+trading_strategy = apply(strategy_by_future,1,sum)
+This applies the sum function by rows 
+
+
+Qn2:
+Changing the sequence shows the effect of different looking back windows. Changing these paramteres alters profit and loss and therefore returns
+
+```
 
 <hr>
 
