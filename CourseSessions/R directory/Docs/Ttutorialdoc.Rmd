@@ -1,0 +1,18 @@
+---
+title: "Rtutorialdoc"
+output: html_document
+---
+
+This is our first document/ report using R markdown! using the BDA course
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+tmp = cor(ProjectData[,correlation_columns])
+print(round(cor(tmp),2))
+
+myData <- read.csv(file = "../data/boats.csv", header = TRUE, sep=",")
+```
+
+```{r echo=FALSE, eval=TRUE, tidy=TRUE}
+tmp = cor(ProjectData[,correlation_columns])
+print(round(cor(tmp),2))
+```
